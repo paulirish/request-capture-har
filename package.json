@@ -1,0 +1,36 @@
+{
+  "name": "request-har-capture",
+  "version": "0.1.0",
+  "description": "Wrapper for request module that saves all traffic as a HAR file, useful for auto mocking a client",
+  "main": "request-har-capture.js",
+  "scripts": {
+    "test": "semistandard && mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larsthorup/node-request-har-capture.git"
+  },
+  "keywords": [
+    "http",
+    "request",
+    "har"
+  ],
+  "author": "Lars Thorup <lars@zealake.com> (http://github.com/larsthorup)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/larsthorup/node-request-har-capture/issues"
+  },
+  "homepage": "https://github.com/larsthorup/node-request-har-capture#readme",
+  "files": [
+    "request-har-capture.js"
+  ],
+  "dependencies": {
+    "request-promise": "^2.0.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "semistandard": "^7.0.2",
+    "sinon": "^1.17.3"
+  }
+}
