@@ -4,7 +4,8 @@
   "description": "Wrapper for request module that saves all traffic as a HAR file, useful for auto mocking a client",
   "main": "request-har-capture.js",
   "scripts": {
-    "test": "semistandard && mocha"
+    "test": "semistandard && istanbul --config=test/istanbul.conf.js cover node_modules/mocha/bin/_mocha",
+    "travis": "npm test && coveralls < output/coverage/lcov.info"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,8 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.2",
+    "istanbul": "^0.4.0",
     "mocha": "^2.4.5",
     "semistandard": "^7.0.2",
     "sinon": "^1.17.3"
