@@ -1,7 +1,24 @@
 var request = require('request-promise');
 var fs = require('fs');
+var pkg = require('./package.json');
 
 var harEntries = [];
+
+function buildHarHeaders (headers) {
+  return headers ? Object.keys(headers).map(function (key) {
+    return {
+      name: key,
+      value: headers[key]
+    };
+  }) : [];
+}
+
+function buildPostData (body) {
+  return body ? {
+    mimeType: 'application/json',
+    text: JSON.stringify(body)
+  } : null;
+}
 
 function buildHarEntry (response) {
   var startTime = response.request.startTime;
@@ -14,9 +31,9 @@ function buildHarEntry (response) {
       url: response.request.uri,
       httpVersion: 'HTTP/' + response.httpVersion,
       cookies: [],
-      headers: [],
+      headers: buildHarHeaders(response.request.headers),
       queryString: [],
-      postData: undefined,
+      postData: buildPostData(response.request.body),
       headersSize: -1,
       bodySize: -1
     },
@@ -25,7 +42,7 @@ function buildHarEntry (response) {
       statusText: response.statusMessage,
       httpVersion: 'HTTP/' + response.httpVersion,
       cookies: [],
-      headers: Object.keys(response.headers).map(function (key) { return {name: key, value: response.headers[key]}; }),
+      headers: buildHarHeaders(response.headers),
       content: {
         size: response.body.length,
         mimeType: response.headers['content-type'],
@@ -63,7 +80,7 @@ requestHarCapture.saveHar = function (fileName) {
   var httpArchive = {
     log: {
       version: '1.2',
-      creator: {name: 'request-har-capture', version: '0.0.0'},
+      creator: {name: 'request-har-capture', version: pkg.version},
       entries: harEntries
     }
   };
