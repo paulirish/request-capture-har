@@ -1,6 +1,6 @@
 {
   "name": "request-har-capture",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Wrapper for request module that saves all traffic as a HAR file, useful for auto mocking a client",
   "main": "request-har-capture.js",
   "scripts": {

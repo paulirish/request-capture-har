@@ -16,7 +16,7 @@ function buildHarHeaders (headers) {
 function buildPostData (body) {
   return body ? {
     mimeType: 'application/json',
-    text: JSON.stringify(body)
+    text: body
   } : null;
 }
 

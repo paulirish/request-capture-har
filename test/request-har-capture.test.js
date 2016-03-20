@@ -36,9 +36,7 @@ describe('request-har-capture', function () {
       return requestHarCapture({
         method: 'POST',
         uri: 'http://localhost:1719/somePath',
-        body: {
-          pass: 'secret'
-        },
+        body: '{"pass":"secret"}',
         headers: {
           'accept-version': '0.1.0'
         }
@@ -84,7 +82,7 @@ describe('request-har-capture', function () {
           value: '0.1.0'
         });
         entry.request.postData.mimeType.should.equal('application/json');
-        entry.request.postData.text.should.equal('{"pass":"secret"}');
+        entry.request.postData.text.should.deep.equal('{"pass":"secret"}');
         entry.response.status.should.equal(200);
         entry.response.content.text.should.equal('{"result":"-20"}');
         entry.response.content.mimeType.should.equal('application/json');
