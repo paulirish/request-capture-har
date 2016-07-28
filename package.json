@@ -26,14 +26,14 @@
     "request-har-capture.js"
   ],
   "dependencies": {
-    "request-promise": "^3.0.0"
+    "request-promise": "^4.0.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "coveralls": "^2.11.9",
     "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
-    "semistandard": "^7.0.5",
+    "semistandard": "^8.0.0",
     "sinon": "^1.17.3"
   }
 }
