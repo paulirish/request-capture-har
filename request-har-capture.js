@@ -3,6 +3,7 @@ var fs = require('fs');
 var pkg = require('./package.json');
 
 var harEntries = [];
+var earliestTime = new Date(2099, 01, 01);
 
 function buildHarHeaders (headers) {
   return headers ? Object.keys(headers).map(function (key) {
@@ -81,6 +82,12 @@ requestHarCapture.saveHar = function (fileName) {
     log: {
       version: '1.2',
       creator: {name: 'request-har-capture', version: pkg.version},
+      pages: [{
+        startedDateTime: new Date(earliestTime).toISOString(),
+        id: 'request-har-capture',
+        title: 'request-har-capture',
+        pageTimings: { }
+      }],
       entries: harEntries
     }
   };
@@ -89,6 +96,7 @@ requestHarCapture.saveHar = function (fileName) {
 
 requestHarCapture.clear = function () {
   harEntries = [];
+  earliestTime = new Date(2099, 01, 01);
 };
 
 module.exports = requestHarCapture;
