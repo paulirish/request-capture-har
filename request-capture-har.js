@@ -23,12 +23,12 @@ function buildPostData (body) {
 
 function buildHarEntry (response) {
   var startTimestamp = response.request.startTime;
-  var responseStartedTimestamp = response.request.responseStarted;
+  var responseStartTimestamp = response.request.response.responseStartTime;
   var endTimestamp = startTimestamp + response.elapsedTime;
 
-  var waitingTime = responseStartedTimestamp - startTimestamp;
+  var waitingTime = responseStartTimestamp - startTimestamp;
   var totalTime = endTimestamp - startTimestamp;
-  var receiveTime = endTimestamp - responseStartedTimestamp;
+  var receiveTime = endTimestamp - responseStartTimestamp;
 
   earliestTime = Math.min(new Date(startTimestamp), earliestTime);
 
