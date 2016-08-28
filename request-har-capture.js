@@ -1,4 +1,4 @@
-var request = require('request-promise');
+var request = require('request');
 var fs = require('fs');
 var pkg = require('./package.json');
 
@@ -68,10 +68,10 @@ function requestHarCapture (options) {
     simple: false,
     startTime: Date.now()
   });
-  return requestHarCapture.request(options).then(function (response) {
-    harEntries.push(buildHarEntry(response));
-    return response;
+  var req = requestHarCapture.request(options, function(err, incomingMessage, response){
+    harEntries.push(buildHarEntry(incomingMessage));
   });
+  return req;
 }
 
 requestHarCapture.request = request;
