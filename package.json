@@ -1,15 +1,15 @@
 {
-  "name": "request-har-capture",
-  "version": "0.3.0",
+  "name": "request-capture-har",
+  "version": "1.0.0",
   "description": "Wrapper for request module that saves all traffic as a HAR file, useful for auto mocking a client",
-  "main": "request-har-capture.js",
+  "main": "request-capture-har.js",
   "scripts": {
-    "test": "semistandard && istanbul --config=test/istanbul.conf.js cover node_modules/mocha/bin/_mocha",
-    "travis": "npm test && coveralls < output/coverage/lcov.info"
+    "test": "semistandard",
+    "travis": "npm test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/larsthorup/node-request-har-capture.git"
+    "url": "git+https://github.com/paulirish/node-request-capture-har.git"
   },
   "keywords": [
     "http",
@@ -19,21 +19,16 @@
   "author": "Lars Thorup <lars@zealake.com> (http://github.com/larsthorup)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/larsthorup/node-request-har-capture/issues"
+    "url": "https://github.com/paulirish/node-request-capture-har/issues"
   },
-  "homepage": "https://github.com/larsthorup/node-request-har-capture#readme",
+  "homepage": "https://github.com/paulirish/node-request-capture-har#readme",
   "files": [
-    "request-har-capture.js"
+    "request-capture-har.js"
   ],
   "dependencies": {
     "request": "^2.67.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "coveralls": "^2.11.9",
-    "istanbul": "^0.4.3",
-    "mocha": "^2.4.5",
-    "semistandard": "^8.0.0",
-    "sinon": "^1.17.3"
+    "semistandard": "^8.0.0"
   }
 }

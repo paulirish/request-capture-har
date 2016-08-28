@@ -3,7 +3,7 @@ var fs = require('fs');
 var pkg = require('./package.json');
 
 var harEntries = [];
-var earliestTime = new Date(2099, 01, 01);
+var earliestTime = new Date(2099, 1, 1);
 
 function buildHarHeaders (headers) {
   return headers ? Object.keys(headers).map(function (key) {
@@ -30,7 +30,7 @@ function buildHarEntry (response) {
   var totalTime = endTimestamp - startTimestamp;
   var receiveTime = endTimestamp - responseStartedTimestamp;
 
-  earliestTime = Math.min(new Date(startTimestamp), earliestTime)
+  earliestTime = Math.min(new Date(startTimestamp), earliestTime);
 
   var entry = {
     startedDateTime: new Date(startTimestamp).toISOString(),
@@ -74,7 +74,8 @@ function buildHarEntry (response) {
 
 function requestHarCapture (options) {
   Object.assign(options, {time: true});
-  var req = requestHarCapture.request(options, function(err, incomingMessage, response) {
+  var req = requestHarCapture.request(options, function (err, incomingMessage, response) {
+    if (err) return;
     harEntries.push(buildHarEntry(incomingMessage));
   });
   return req;
@@ -86,11 +87,11 @@ requestHarCapture.saveHar = function (fileName) {
   var httpArchive = {
     log: {
       version: '1.2',
-      creator: {name: 'request-har-capture', version: pkg.version},
+      creator: {name: 'request-capture-har', version: pkg.version},
       pages: [{
         startedDateTime: new Date(earliestTime).toISOString(),
-        id: 'request-har-capture',
-        title: 'request-har-capture',
+        id: 'request-capture-har',
+        title: 'request-capture-har',
         pageTimings: { }
       }],
       entries: harEntries
@@ -101,7 +102,7 @@ requestHarCapture.saveHar = function (fileName) {
 
 requestHarCapture.clear = function () {
   harEntries = [];
-  earliestTime = new Date(2099, 01, 01);
+  earliestTime = new Date(2099, 1, 1);
 };
 
 module.exports = requestHarCapture;
