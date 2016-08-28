@@ -1,11 +1,8 @@
 # request-capture-har
 
-Wrapper for [`request` module](https://www.npmjs.com/package/request) that saves all traffic as a HAR file.
+> Wrapper for [`request` module](https://www.npmjs.com/package/request) that saves all network traffic data as a HAR file.
 
-[![Build Status](https://travis-ci.org/paulirish/node-request-capture-har.png)](https://travis-ci.org/paulirish/node-request-capture-har)
-[![Dependency Status](https://david-dm.org/paulirish/node-request-capture-har.png)](https://david-dm.org/paulirish/node-request-capture-har#info=dependencies)
-[![devDependency Status](https://david-dm.org/paulirish/node-request-capture-har/dev-status.png)](https://david-dm.org/paulirish/node-request-capture-har#info=devDependencies)
-[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
+Requires `request@master` as support for `responseStartedTime` timing was [just added](https://github.com/request/request/commit/33aa74483d676a2a490f3ebe83161f6a6244bf4a).
 
 ### Usage
 
