@@ -22,14 +22,22 @@ function buildPostData (body) {
 }
 
 function buildHarEntry (response) {
-  var startTime = response.request.startTime;
-  var endTime = Date.now();
+  var startTimestamp = response.request.startTime;
+  var responseStartedTimestamp = response.request.responseStarted;
+  var endTimestamp = startTimestamp + response.elapsedTime;
+
+  var waitingTime = responseStartedTimestamp - startTimestamp;
+  var totalTime = endTimestamp - startTimestamp;
+  var receiveTime = endTimestamp - responseStartedTimestamp;
+
+  earliestTime = Math.min(new Date(startTimestamp), earliestTime)
+
   var entry = {
-    startedDateTime: new Date(startTime).toISOString(),
-    time: endTime - startTime,
+    startedDateTime: new Date(startTimestamp).toISOString(),
+    time: totalTime,
     request: {
       method: response.request.method,
-      url: response.request.uri,
+      url: response.request.uri.href,
       httpVersion: 'HTTP/' + response.httpVersion,
       cookies: [],
       headers: buildHarHeaders(response.request.headers),
@@ -44,6 +52,7 @@ function buildHarEntry (response) {
       httpVersion: 'HTTP/' + response.httpVersion,
       cookies: [],
       headers: buildHarHeaders(response.headers),
+      _transferSize: response.body.length,
       content: {
         size: response.body.length,
         mimeType: response.headers['content-type'],
