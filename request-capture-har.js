@@ -100,7 +100,7 @@ requestHarCapture.saveHar = function (fileName) {
   fs.writeFileSync(fileName, JSON.stringify(httpArchive, null, 2));
 };
 
-requestHarCapture.clear = function () {
+requestHarCapture.clearHar = function () {
   harEntries = [];
   earliestTime = new Date(2099, 1, 1);
 };
