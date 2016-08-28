@@ -56,20 +56,16 @@ function buildHarEntry (response) {
     cache: {},
     timings: {
       send: -1,
-      receive: -1,
-      wait: endTime - startTime
+      wait: waitingTime,
+      receive: receiveTime
     }
   };
   return entry;
 }
 
 function requestHarCapture (options) {
-  Object.assign(options, {
-    resolveWithFullResponse: true,
-    simple: false,
-    startTime: Date.now()
-  });
-  var req = requestHarCapture.request(options, function(err, incomingMessage, response){
+  Object.assign(options, {time: true});
+  var req = requestHarCapture.request(options, function(err, incomingMessage, response) {
     harEntries.push(buildHarEntry(incomingMessage));
   });
   return req;
