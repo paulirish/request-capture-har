@@ -25,7 +25,7 @@ function HarWrapper (requestModule) {
 HarWrapper.prototype.request = function (options) {
   Object.assign(options, { time: true });
   var self = this;
-  return this.requestModule.request(options, function(err, incomingMessage, response) {
+  return this.requestModule.request(options, function (err, incomingMessage, response) {
     if (err) return;
     self.entries.push(self.buildHarEntry(incomingMessage));
   });
@@ -42,7 +42,7 @@ HarWrapper.prototype.saveHar = function (fileName) {
       version: '1.2',
       creator: {name: 'request-capture-har', version: pkg.version},
       pages: [{
-        startedDateTime: new Date(earliestTime).toISOString(),
+        startedDateTime: new Date(this.earliestTime).toISOString(),
         id: 'request-capture-har',
         title: 'request-capture-har',
         pageTimings: { }
@@ -87,7 +87,7 @@ HarWrapper.prototype.buildHarEntry = function (response) {
       _transferSize: response.body.length,
       content: {
         size: response.body.length,
-        mimeType: response.headers['content-type'],
+        mimeType: response.headers['content-type']
       },
       redirectURL: '',
       headersSize: -1,
