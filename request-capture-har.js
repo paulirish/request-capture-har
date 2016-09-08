@@ -1,4 +1,3 @@
-var request = require('request');
 var fs = require('fs');
 var pkg = require('./package.json');
 
@@ -56,7 +55,6 @@ function buildHarEntry (response) {
       content: {
         size: response.body.length,
         mimeType: response.headers['content-type'],
-        text: response.body
       },
       redirectURL: '',
       headersSize: -1,
@@ -72,16 +70,18 @@ function buildHarEntry (response) {
   return entry;
 }
 
-function requestHarCapture (options) {
-  Object.assign(options, {time: true});
-  var req = requestHarCapture.request(options, function (err, incomingMessage, response) {
-    if (err) return;
-    harEntries.push(buildHarEntry(incomingMessage));
-  });
-  return req;
+function requestHarCapture(modulename) {
+  var request = require(modulename);
+  requestHarCapture.request = request;
+  return function(options) {
+    Object.assign(options, { time: true });
+    var req = requestHarCapture.request(options, function(err, incomingMessage, response) {
+      if (err) return;
+      harEntries.push(buildHarEntry(incomingMessage));
+    });
+    return req;
+  }
 }
-
-requestHarCapture.request = request;
 
 requestHarCapture.saveHar = function (fileName) {
   var httpArchive = {

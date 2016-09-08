@@ -2,22 +2,19 @@
 
 Wrapper for [`request` module](https://www.npmjs.com/package/request) that saves all traffic as a HAR file.
 
-[![Build Status](https://travis-ci.org/paulirish/node-request-capture-har.png)](https://travis-ci.org/paulirish/node-request-capture-har)
-[![Dependency Status](https://david-dm.org/paulirish/node-request-capture-har.png)](https://david-dm.org/paulirish/node-request-capture-har#info=dependencies)
-[![devDependency Status](https://david-dm.org/paulirish/node-request-capture-har/dev-status.png)](https://david-dm.org/paulirish/node-request-capture-har#info=devDependencies)
-[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
+Full functionality is dependent on [request PR #2352](https://github.com/request/request/pull/2352) which is not yet shipped to a release. You can use it in your dependencies as `"request": "request/request#bfb3a46",`
 
 ### Usage
 
 ```js
-// require in request-capture-har in place of request
-const request = require('request-capture-har');
+// wrap around your request module
+const request = require('request-capture-har')('request');
 
 // ...
 // Use request as you normally would
 // ...
 
-// Save HAR file to disk 
+// Save HAR file to disk
 request.saveHar(`network-waterfall_${new Date().toISOString()}.har`);
 
 // You can also clear any collected traffic
