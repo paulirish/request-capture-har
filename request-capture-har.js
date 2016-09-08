@@ -25,7 +25,7 @@ function HarWrapper (requestModule) {
 HarWrapper.prototype.request = function (options) {
   Object.assign(options, { time: true });
   var self = this;
-  return this.requestModule.request(options, function (err, incomingMessage, response) {
+  return this.requestModule(options, function (err, incomingMessage, response) {
     if (err) return;
     self.entries.push(self.buildHarEntry(incomingMessage));
   });
