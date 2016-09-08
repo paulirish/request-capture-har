@@ -8,17 +8,19 @@ Full functionality is dependent on merged [request PR #2352](https://github.com/
 
 ```js
 // wrap around your request module
-const request = require('request-capture-har')('request');
+const HarWrapper = require('request-capture-har');
+const wrapper = new HarWrapper(require('request'));
 
 // ...
 // Use request as you normally would
 // ...
+wrapper.request;
 
 // Save HAR file to disk
-request.saveHar(`network-waterfall_${new Date().toISOString()}.har`);
+wrapper.saveHar(`network-waterfall_${new Date().toISOString()}.har`);
 
 // You can also clear any collected traffic
-request.clearHar();
+wrapper.clearHar();
 ```
 
 This repo is a fork of [larsthorup's `node-request-har-capture`](https://github.com/larsthorup/node-request-har-capture). Instead of monkey-patching `request-promise`, we now are based on `request` including their streaming API. We also added better support for transfer timings.
