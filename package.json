@@ -25,9 +25,6 @@
   "files": [
     "request-capture-har.js"
   ],
-  "dependencies": {
-    "request": "^2.67.0"
-  },
   "devDependencies": {
     "semistandard": "^8.0.0"
   }
