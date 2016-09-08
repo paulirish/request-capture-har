@@ -1,9 +1,6 @@
 var fs = require('fs');
 var pkg = require('./package.json');
 
-var harEntries = [];
-var earliestTime = new Date(2099, 1, 1);
-
 function buildHarHeaders (headers) {
   return headers ? Object.keys(headers).map(function (key) {
     return {
@@ -20,7 +17,43 @@ function buildPostData (body) {
   } : null;
 }
 
-function buildHarEntry (response) {
+function HarWrapper (requestModule) {
+  this.requestModule = requestModule;
+  this.clear();
+}
+
+HarWrapper.prototype.request = function (options) {
+  Object.assign(options, { time: true });
+  var self = this;
+  return this.requestModule.request(options, function(err, incomingMessage, response) {
+    if (err) return;
+    self.entries.push(self.buildHarEntry(incomingMessage));
+  });
+};
+
+HarWrapper.prototype.clear = function () {
+  this.entries = [];
+  this.earliestTime = new Date(2099, 1, 1);
+};
+
+HarWrapper.prototype.saveHar = function (fileName) {
+  var httpArchive = {
+    log: {
+      version: '1.2',
+      creator: {name: 'request-capture-har', version: pkg.version},
+      pages: [{
+        startedDateTime: new Date(earliestTime).toISOString(),
+        id: 'request-capture-har',
+        title: 'request-capture-har',
+        pageTimings: { }
+      }],
+      entries: this.entries
+    }
+  };
+  fs.writeFileSync(fileName, JSON.stringify(httpArchive, null, 2));
+};
+
+HarWrapper.prototype.buildHarEntry = function (response) {
   var startTimestamp = response.request.startTime;
   var responseStartTimestamp = response.request.response.responseStartTime;
   var endTimestamp = startTimestamp + response.elapsedTime;
@@ -29,7 +62,7 @@ function buildHarEntry (response) {
   var totalTime = endTimestamp - startTimestamp;
   var receiveTime = endTimestamp - responseStartTimestamp;
 
-  earliestTime = Math.min(new Date(startTimestamp), earliestTime);
+  this.earliestTime = Math.min(new Date(startTimestamp), this.earliestTime);
 
   var entry = {
     startedDateTime: new Date(startTimestamp).toISOString(),
@@ -68,41 +101,6 @@ function buildHarEntry (response) {
     }
   };
   return entry;
-}
-
-function requestHarCapture(modulename) {
-  var request = require(modulename);
-  requestHarCapture.request = request;
-  return function(options) {
-    Object.assign(options, { time: true });
-    var req = requestHarCapture.request(options, function(err, incomingMessage, response) {
-      if (err) return;
-      harEntries.push(buildHarEntry(incomingMessage));
-    });
-    return req;
-  }
-}
-
-requestHarCapture.saveHar = function (fileName) {
-  var httpArchive = {
-    log: {
-      version: '1.2',
-      creator: {name: 'request-capture-har', version: pkg.version},
-      pages: [{
-        startedDateTime: new Date(earliestTime).toISOString(),
-        id: 'request-capture-har',
-        title: 'request-capture-har',
-        pageTimings: { }
-      }],
-      entries: harEntries
-    }
-  };
-  fs.writeFileSync(fileName, JSON.stringify(httpArchive, null, 2));
 };
 
-requestHarCapture.clearHar = function () {
-  harEntries = [];
-  earliestTime = new Date(2099, 1, 1);
-};
-
-module.exports = requestHarCapture;
+module.exports = HarWrapper;
