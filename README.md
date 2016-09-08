@@ -1,8 +1,8 @@
 # request-capture-har
 
-Wrapper for [`request` module](https://www.npmjs.com/package/request) that saves all traffic as a HAR file.
+> Wrapper for [`request` module](https://www.npmjs.com/package/request) that saves all network traffic data as a HAR file.
 
-Full functionality is dependent on [request PR #2352](https://github.com/request/request/pull/2352) which is not yet shipped to a release. You can use it in your dependencies as `"request": "request/request#bfb3a46",`
+Full functionality is dependent on merged [request PR #2352](https://github.com/request/request/pull/2352) which is not yet shipped to a release. You can use it in your dependencies as `"request": "request/request#bfb3a46",`.
 
 ### Usage
 
