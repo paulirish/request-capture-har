@@ -16,16 +16,15 @@ function appendPostData (entry, request) {
 
   entry.request.postData = {
     mimeType: 'application/octet-stream',
-    text: resquest.body
+    text: request.body
   };
 }
 
-function toMs(num) {
+function toMs (num) {
   return Math.round(num * 1000) / 1000;
 }
 
-function appendTimings(entry, response) {
-
+function appendTimings (entry, response) {
   var startTs = response.request.startTime;
   var endTs = startTs + response.elapsedTime;
   var totalTime = endTs - startTs;
@@ -38,12 +37,12 @@ function appendTimings(entry, response) {
   // new timing data added in request 2.81.0
   if (response.timingPhases) {
     entry.timings = {
-      "blocked": toMs(response.timingPhases.wait),
-      "dns": toMs(response.timingPhases.dns),
-      "connect": toMs(response.timingPhases.tcp),
-      "send": 0,
-      "wait": toMs(response.timingPhases.firstByte),
-      "receive": toMs(response.timingPhases.download),
+      'blocked': toMs(response.timingPhases.wait),
+      'dns': toMs(response.timingPhases.dns),
+      'connect': toMs(response.timingPhases.tcp),
+      'send': 0,
+      'wait': toMs(response.timingPhases.firstByte),
+      'receive': toMs(response.timingPhases.download)
     };
     return;
   }
@@ -71,12 +70,15 @@ HarWrapper.prototype.request = function (options) {
   // make call to true request module
   return this.requestModule(options, function (err, incomingMessage, response) {
     // create new har entry with reponse timings
-    if (!err)
+    if (!err) {
       self.entries.push(self.buildHarEntry(incomingMessage));
+    }
+
     // fire any callback provided in options, as request has ignored it
     //     https://github.com/request/request/blob/v2.75.0/index.js#L40
-    if (typeof options.callback === 'function')
+    if (typeof options.callback === 'function') {
       options.callback(...arguments);
+    }
   });
 };
 
@@ -129,7 +131,7 @@ HarWrapper.prototype.buildHarEntry = function (response) {
       headersSize: -1,
       bodySize: -1
     },
-    cache: {},
+    cache: {}
   };
   appendTimings(entry, response);
   appendPostData(entry, response.request);

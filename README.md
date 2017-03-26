@@ -4,14 +4,18 @@
 
 [![Build Status](https://travis-ci.org/paulirish/request-capture-har.png)](https://travis-ci.org/paulirish/request-capture-har) [![NPM request-capture-har package](https://img.shields.io/npm/v/request-capture-har.svg)](https://npmjs.org/package/request-capture-har)
 
-[request >= v2.75.0](https://github.com/request/request/releases) required.
+**Compatibility**
+
+request >= 2.81.0 recommended, as it has much more detailed timings via `timingPhases`.
+
+request >= v2.75.0 required, at a minimum.
 
 ### Usage
 
 ```js
 // wrap around your request module
-const RequestCaptureHar = require('request-capture-har');
-const requestCaptureHar = new RequestCaptureHar(require('request'));
+const RCH = require('request-capture-har');
+const requestCaptureHar = new RCH(require('request'));
 
 // ...
 // `requestCaptureHar.request` is your `request` module's API.

@@ -5,7 +5,7 @@
   "main": "request-capture-har.js",
   "scripts": {
     "test": "semistandard",
-    "travis": "npm test"
+    "travis": "npm test && node request-capture-har.js"
   },
   "repository": {
     "type": "git",
