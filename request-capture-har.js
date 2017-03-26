@@ -5,16 +5,19 @@ function buildHarHeaders (headers) {
   return headers ? Object.keys(headers).map(function (key) {
     return {
       name: key,
-      value: headers[key]
+      // header values are required to be strings
+      value: headers[key].toString()
     };
   }) : [];
 }
 
-function buildPostData (body) {
-  return body ? {
-    mimeType: 'application/json',
-    text: body
-  } : null;
+function appendPostData (entry, request) {
+  if (!request.body) return;
+
+  entry.request.postData = {
+    mimeType: 'application/octet-stream',
+    text: resquest.body
+  };
 }
 
 function HarWrapper (requestModule) {
@@ -81,7 +84,6 @@ HarWrapper.prototype.buildHarEntry = function (response) {
       cookies: [],
       headers: buildHarHeaders(response.request.headers),
       queryString: [],
-      postData: buildPostData(response.request.body),
       headersSize: -1,
       bodySize: -1
     },
@@ -107,6 +109,7 @@ HarWrapper.prototype.buildHarEntry = function (response) {
       receive: receiveTime
     }
   };
+  appendPostData(entry, response.request);
   return entry;
 };
 
