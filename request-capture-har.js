@@ -20,6 +20,45 @@ function appendPostData (entry, request) {
   };
 }
 
+function toMs(num) {
+  return Math.round(num * 1000) / 1000;
+}
+
+function appendTimings(entry, response) {
+
+  var startTs = response.request.startTime;
+  var endTs = startTs + response.elapsedTime;
+  var totalTime = endTs - startTs;
+
+  this.earliestTime = Math.min(new Date(startTs), this.earliestTime);
+
+  entry.startedDateTime = new Date(startTs).toISOString();
+  entry.time = totalTime;
+
+  // new timing data added in request 2.81.0
+  if (response.timingPhases) {
+    entry.timings = {
+      "blocked": toMs(response.timingPhases.wait),
+      "dns": toMs(response.timingPhases.dns),
+      "connect": toMs(response.timingPhases.tcp),
+      "send": 0,
+      "wait": toMs(response.timingPhases.firstByte),
+      "receive": toMs(response.timingPhases.download),
+    };
+    return;
+  }
+
+  var responseStartTs = response.request.response.responseStartTime;
+
+  var waitingTime = responseStartTs - startTs;
+  var receiveTime = endTs - responseStartTs;
+  entry.timings = {
+    send: 0,
+    wait: waitingTime,
+    receive: receiveTime
+  };
+}
+
 function HarWrapper (requestModule) {
   this.requestModule = requestModule;
   this.clear();
@@ -64,19 +103,7 @@ HarWrapper.prototype.saveHar = function (fileName) {
 };
 
 HarWrapper.prototype.buildHarEntry = function (response) {
-  var startTimestamp = response.request.startTime;
-  var responseStartTimestamp = response.request.response.responseStartTime;
-  var endTimestamp = startTimestamp + response.elapsedTime;
-
-  var waitingTime = responseStartTimestamp - startTimestamp;
-  var totalTime = endTimestamp - startTimestamp;
-  var receiveTime = endTimestamp - responseStartTimestamp;
-
-  this.earliestTime = Math.min(new Date(startTimestamp), this.earliestTime);
-
   var entry = {
-    startedDateTime: new Date(startTimestamp).toISOString(),
-    time: totalTime,
     request: {
       method: response.request.method,
       url: response.request.uri.href,
@@ -103,12 +130,8 @@ HarWrapper.prototype.buildHarEntry = function (response) {
       bodySize: -1
     },
     cache: {},
-    timings: {
-      send: -1,
-      wait: waitingTime,
-      receive: receiveTime
-    }
   };
+  appendTimings(entry, response);
   appendPostData(entry, response.request);
   return entry;
 };
