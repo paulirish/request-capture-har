@@ -23,11 +23,18 @@ function HarWrapper (requestModule) {
 }
 
 HarWrapper.prototype.request = function (options) {
+  // include detailed timing data in response object
   Object.assign(options, { time: true });
   var self = this;
+  // make call to true request module
   return this.requestModule(options, function (err, incomingMessage, response) {
-    if (err) return;
-    self.entries.push(self.buildHarEntry(incomingMessage));
+    // create new har entry with reponse timings
+    if (!err)
+      self.entries.push(self.buildHarEntry(incomingMessage));
+    // fire any callback provided in options, as request has ignored it
+    //     https://github.com/request/request/blob/v2.75.0/index.js#L40
+    if (typeof options.callback === 'function')
+      options.callback(...arguments);
   });
 };
 
