@@ -43,7 +43,7 @@ HarWrapper.prototype.request = function (options) {
     // fire any callback provided in options, as request has ignored it
     //     https://github.com/request/request/blob/v2.75.0/index.js#L40
     if (typeof options.callback === 'function') {
-      options.callback(...arguments);
+      options.callback.apply(null, arguments);
     }
   });
 };
