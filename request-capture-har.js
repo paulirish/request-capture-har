@@ -24,40 +24,6 @@ function toMs (num) {
   return Math.round(num * 1000) / 1000;
 }
 
-function appendTimings (entry, response) {
-  var startTs = response.request.startTime;
-  var endTs = startTs + response.elapsedTime;
-  var totalTime = endTs - startTs;
-
-  this.earliestTime = Math.min(new Date(startTs), this.earliestTime);
-
-  entry.startedDateTime = new Date(startTs).toISOString();
-  entry.time = totalTime;
-
-  // new timing data added in request 2.81.0
-  if (response.timingPhases) {
-    entry.timings = {
-      'blocked': toMs(response.timingPhases.wait),
-      'dns': toMs(response.timingPhases.dns),
-      'connect': toMs(response.timingPhases.tcp),
-      'send': 0,
-      'wait': toMs(response.timingPhases.firstByte),
-      'receive': toMs(response.timingPhases.download)
-    };
-    return;
-  }
-
-  var responseStartTs = response.request.response.responseStartTime;
-
-  var waitingTime = responseStartTs - startTs;
-  var receiveTime = endTs - responseStartTs;
-  entry.timings = {
-    send: 0,
-    wait: waitingTime,
-    receive: receiveTime
-  };
-}
-
 function HarWrapper (requestModule) {
   this.requestModule = requestModule;
   this.clear();
@@ -104,6 +70,41 @@ HarWrapper.prototype.saveHar = function (fileName) {
   fs.writeFileSync(fileName, JSON.stringify(httpArchive, null, 2));
 };
 
+HarWrapper.prototype.buildTimings = function(entry, response) { 
+  var startTs = response.request.startTime;
+  var endTs = startTs + response.elapsedTime;
+  var totalTime = endTs - startTs;
+
+  if (new Date(startTs) < this.earliestTime) {
+    this.earliestTime = new Date(startTs);
+  }
+  entry.startedDateTime = new Date(startTs).toISOString();
+  entry.time = totalTime;
+
+  // new timing data added in request 2.81.0
+  if (response.timingPhases) {
+    entry.timings = {
+      'blocked': toMs(response.timingPhases.wait),
+      'dns': toMs(response.timingPhases.dns),
+      'connect': toMs(response.timingPhases.tcp),
+      'send': 0,
+      'wait': toMs(response.timingPhases.firstByte),
+      'receive': toMs(response.timingPhases.download)
+    };
+    return;
+  }
+
+  var responseStartTs = response.request.response.responseStartTime;
+
+  var waitingTime = responseStartTs - startTs;
+  var receiveTime = endTs - responseStartTs;
+  entry.timings = {
+    send: 0,
+    wait: waitingTime,
+    receive: receiveTime
+  };
+}
+
 HarWrapper.prototype.buildHarEntry = function (response) {
   var entry = {
     request: {
@@ -133,7 +134,7 @@ HarWrapper.prototype.buildHarEntry = function (response) {
     },
     cache: {}
   };
-  appendTimings(entry, response);
+  this.buildTimings(entry, response);
   appendPostData(entry, response.request);
   return entry;
 };
