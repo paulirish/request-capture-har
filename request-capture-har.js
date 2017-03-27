@@ -72,6 +72,8 @@ HarWrapper.prototype.saveHar = function (fileName) {
 
 HarWrapper.prototype.buildTimings = function (entry, response) {
   var startTs = response.request.startTime;
+  if (!startTs) return;
+
   var endTs = startTs + response.elapsedTime;
   var totalTime = endTs - startTs;
 

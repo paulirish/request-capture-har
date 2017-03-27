@@ -4,7 +4,7 @@
   "description": "Wrapper for request module that saves all traffic as a HAR file, useful for auto mocking a client",
   "main": "request-capture-har.js",
   "scripts": {
-    "test": "semistandard",
+    "test": "semistandard && ava",
     "travis": "npm test && node request-capture-har.js"
   },
   "repository": {
@@ -26,6 +26,8 @@
     "request-capture-har.js"
   ],
   "devDependencies": {
+    "ava": "^0.18.2",
+    "request": "^2.81.0",
     "semistandard": "^8.0.0"
   }
 }
