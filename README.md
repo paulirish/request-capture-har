@@ -26,7 +26,7 @@ requestCaptureHar.request(uri, options, callback);
 requestCaptureHar.saveHar(`network-waterfall_${new Date().toISOString()}.har`);
 
 // You can also clear any collected traffic
-requestCaptureHar.clearHar();
+requestCaptureHar.clear();
 ```
 
 This repo is a fork of [larsthorup's `node-request-har-capture`](https://github.com/larsthorup/node-request-har-capture). Instead of monkey-patching `request-promise`, the API allows you to pass in the general `request` module. We also added better support for transfer timings.
