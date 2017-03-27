@@ -1,5 +1,6 @@
 var fs = require('fs');
 var pkg = require('./package.json');
+const stringify = require('json-stringify-safe')
 
 function buildHarHeaders (headers) {
   return headers ? Object.keys(headers).map(function (key) {
@@ -29,15 +30,36 @@ function HarWrapper (requestModule) {
   this.clear();
 }
 
+const all = [];
 HarWrapper.prototype.request = function (options) {
   // include detailed timing data in response object
   Object.assign(options, { time: true });
   var self = this;
   // make call to true request module
-  return this.requestModule(options, function (err, incomingMessage, response) {
+  return this.requestModule(options, function (err, response, body) {
+    const cloned = {};
+    cloned.request = JSON.parse(stringify(response.request));
+    cloned.elapsedTime = JSON.parse(stringify(response.elapsedTime));
+    cloned.timingPhases = JSON.parse(stringify(response.timingPhases));
+    cloned.request.response = {};
+    cloned.request.response.responseStartTime = response.request.response.responseStartTime;
+    cloned.httpVersion = JSON.parse(stringify(response.httpVersion));
+    cloned.statusCode = JSON.parse(stringify(response.statusCode));
+    cloned.statusMessage = JSON.parse(stringify(response.statusMessage));
+    cloned.body = {
+      length: response.body.length
+    };
+    cloned.headers = JSON.parse(stringify(response.headers))
+    cloned.elapsedTime = JSON.parse(stringify(response.elapsedTime))
+    cloned.timings = JSON.parse(stringify(response.timings))
+
+    cloned.request.startTime = response.request.startTime;
+    
+
+    all.push(cloned);
     // create new har entry with reponse timings
     if (!err) {
-      self.entries.push(self.buildHarEntry(incomingMessage));
+      self.entries.push(self.buildHarEntry(response));
     }
 
     // fire any callback provided in options, as request has ignored it
@@ -67,7 +89,9 @@ HarWrapper.prototype.saveHar = function (fileName) {
       entries: this.entries
     }
   };
+  fs.writeFileSync('allrequests.json', JSON.stringify(all, null, 2));
   fs.writeFileSync(fileName, JSON.stringify(httpArchive, null, 2));
+  
 };
 
 HarWrapper.prototype.buildTimings = function (entry, response) {
