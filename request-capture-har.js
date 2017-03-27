@@ -70,7 +70,7 @@ HarWrapper.prototype.saveHar = function (fileName) {
   fs.writeFileSync(fileName, JSON.stringify(httpArchive, null, 2));
 };
 
-HarWrapper.prototype.buildTimings = function(entry, response) { 
+HarWrapper.prototype.buildTimings = function (entry, response) {
   var startTs = response.request.startTime;
   var endTs = startTs + response.elapsedTime;
   var totalTime = endTs - startTs;
@@ -103,7 +103,7 @@ HarWrapper.prototype.buildTimings = function(entry, response) {
     wait: waitingTime,
     receive: receiveTime
   };
-}
+};
 
 HarWrapper.prototype.buildHarEntry = function (response) {
   var entry = {
